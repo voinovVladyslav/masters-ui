@@ -1,3 +1,4 @@
+import { ProfileService } from '@/services/users'
 import type { User } from '@/types/user'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -9,7 +10,9 @@ export const useAuthStore = defineStore('auth', () => {
         return user.value?.role === 'admin'
     })
     const loadUser = async (): Promise<boolean> => {
-        return false
+        const response = await ProfileService.getSelf()
+        user.value = response.result
+        return isAuthenticated.value
     }
     return { user, isAuthenticated, isAdmin, loadUser }
 })

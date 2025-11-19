@@ -1,11 +1,24 @@
 <script setup lang="ts">
+import { authenticateApi } from '@/services/api'
 import { authService } from '@/services/auth'
+import { setToken } from '@/services/token'
+import { useAuthStore } from '@/stores/auth'
 import { ref } from 'vue'
+
+const authStore = useAuthStore()
 const email = ref<string>('')
 const password = ref<string>('')
+
 const onLogin = async () => {
-    const token = await authService.login(email.value, password.value)
-    console.log(token)
+    const response = await authService.login(email.value, password.value)
+    if (response.error) {
+        console.log('invalid login')
+        return
+    }
+    const token = response.result.token
+    setToken(token)
+    authenticateApi(token)
+    await authStore.loadUser()
 }
 </script>
 <template>
