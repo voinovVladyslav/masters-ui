@@ -1,3 +1,5 @@
+import { authenticateApi } from '@/services/api'
+import { getToken } from '@/services/token'
 import { ProfileService } from '@/services/users'
 import type { User } from '@/types/user'
 import { defineStore } from 'pinia'
@@ -10,6 +12,11 @@ export const useAuthStore = defineStore('auth', () => {
         return user.value?.role === 'admin'
     })
     const loadUser = async (): Promise<boolean> => {
+        const token = getToken()
+        if (!token) {
+            return false
+        }
+        authenticateApi(token)
         const response = await ProfileService.getSelf()
         user.value = response.result
         return isAuthenticated.value
