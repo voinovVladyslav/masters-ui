@@ -4,7 +4,18 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'home',
-        component: () => import('@/views/MainView.vue'),
+        redirect: () => {
+            return { name: 'courses' }
+        },
+        meta: {
+            authRequired: true,
+            adminRequired: false,
+        },
+    },
+    {
+        path: '/courses',
+        name: 'courses',
+        component: () => import('@/views/CoursesView.vue'),
         meta: {
             authRequired: true,
             adminRequired: false,
@@ -23,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:catchAll(.*)*',
         name: 'not-found',
         redirect: () => {
-            return { name: 'home' }
+            return { name: 'courses' }
         },
         meta: {
             authRequired: false,
