@@ -21,16 +21,16 @@ const showCourseEditDialog = ref<boolean>(false)
 const isTeacher = computed(() => authStore.user?.role === 'teacher')
 
 // Calculate statistics
-const totalCourses = computed(() => coursesStore.courses.length)
+const totalCourses = computed(() => coursesStore.courses?.length || 0)
 const totalThemes = computed(() => {
-    return coursesStore.courses.reduce((sum, course) => sum + course.themes.length, 0)
+    return coursesStore.courses?.reduce((sum, course) => sum + course.themes.length, 0) || 0
 })
 const totalMaterials = computed(() => {
-    return coursesStore.courses.reduce(
+    return coursesStore.courses?.reduce(
         (sum, course) =>
             sum + course.themes.reduce((themeSum, theme) => themeSum + theme.materials.length, 0),
         0
-    )
+    ) || 0
 })
 const completedCourses = computed(() => {
     // Placeholder - would need completion tracking
@@ -79,7 +79,7 @@ const handleEditCourse = (data: { name: string; description: string }) => {
                                 </p>
                                 <div class="banner-actions">
                                     <v-btn
-                                        v-if="coursesStore.courses.length > 0 && coursesStore.courses[0]"
+                                        v-if="coursesStore.courses && coursesStore.courses.length > 0 && coursesStore.courses[0]"
                                         color="white"
                                         variant="flat"
                                         size="large"
@@ -177,7 +177,7 @@ const handleEditCourse = (data: { name: string; description: string }) => {
                             See All
                         </v-btn>
                     </div>
-                    <v-row v-if="coursesStore.courses.length > 0">
+                    <v-row v-if="coursesStore.courses && coursesStore.courses.length > 0">
                         <v-col
                             v-for="course in coursesStore.courses"
                             :key="course.id"

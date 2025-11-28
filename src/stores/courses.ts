@@ -43,7 +43,7 @@ export const useCoursesStore = defineStore('courses', () => {
             return false
         }
         if (response.result) {
-            courses.value = response.result.results
+            courses.value = response.result.results || []
         }
         loading.value = false
         return true

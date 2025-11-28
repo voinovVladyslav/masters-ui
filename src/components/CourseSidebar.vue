@@ -105,7 +105,7 @@ const selectMaterial = (materialId: number) => {
                 <div class="section-header">COURSES</div>
                 <v-list density="compact" nav class="courses-list">
             <v-list-group
-                v-for="course in coursesStore.courses"
+                v-for="course in coursesStore.courses || []"
                 :key="course.id"
                 :value="isExpanded(course.id, 'course')"
                 class="course-group"
@@ -175,7 +175,7 @@ const selectMaterial = (materialId: number) => {
             </div>
         </div>
 
-        <div v-if="coursesStore.courses.length === 0" class="empty-state">
+        <div v-if="!coursesStore.courses || coursesStore.courses.length === 0" class="empty-state">
             <v-icon size="48" color="grey-lighten-1" class="mb-2">mdi-book-open-page-variant</v-icon>
             <p class="text-body-2 text-grey">No courses available</p>
         </div>

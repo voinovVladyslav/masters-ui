@@ -42,8 +42,10 @@ const handleLogout = () => {
                                     </span>
                                     <span class="text-caption text-grey">
                                         {{
-                                            authStore.user.role.charAt(0).toUpperCase() +
-                                            authStore.user.role.slice(1)
+                                            authStore.user.role
+                                                ? authStore.user.role.charAt(0).toUpperCase() +
+                                                  authStore.user.role.slice(1)
+                                                : ''
                                         }}
                                     </span>
                                 </div>
