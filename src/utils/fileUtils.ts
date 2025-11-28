@@ -1,9 +1,9 @@
-export type FileType = 'docx' | 'pdf' | 'pptx' | 'png' | 'jpg' | 'jpeg' | 'unknown'
+export type FileType = 'docx' | 'pdf' | 'pptx' | 'png' | 'jpg' | 'jpeg' | 'py' | 'unknown'
 
 export const getFileTypeFromUrl = (fileUrl: string): FileType => {
     const url = fileUrl.toLowerCase()
     const extension = url.split('.').pop()?.split('?')[0] // Remove query params
-    
+
     switch (extension) {
         case 'docx':
             return 'docx'
@@ -16,6 +16,8 @@ export const getFileTypeFromUrl = (fileUrl: string): FileType => {
         case 'jpg':
         case 'jpeg':
             return 'jpg'
+        case 'py':
+            return 'py'
         default:
             return 'unknown'
     }
@@ -32,6 +34,8 @@ export const getFileTypeIcon = (fileType: FileType): string => {
         case 'png':
         case 'jpg':
             return 'mdi-file-image'
+        case 'py':
+            return 'mdi-language-python'
         default:
             return 'mdi-file-document'
     }
@@ -44,6 +48,7 @@ export const getFileTypeColor = (fileType: FileType): string => {
         case 'docx':
             return 'info'
         case 'pptx':
+        case 'py':
             return 'warning'
         case 'png':
         case 'jpg':
@@ -52,4 +57,3 @@ export const getFileTypeColor = (fileType: FileType): string => {
             return 'grey'
     }
 }
-
