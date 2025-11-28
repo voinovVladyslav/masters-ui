@@ -221,6 +221,13 @@ const handleEditCourse = (data: { name: string; description: string }) => {
                 <div v-else-if="coursesStore.currentMaterial" class="material-container">
                     <v-card class="material-card" rounded="xl">
                         <v-card-title class="material-header">
+                            <v-btn
+                                icon="mdi-arrow-left"
+                                variant="text"
+                                size="small"
+                                class="mr-2"
+                                @click="coursesStore.selectMaterial(null)"
+                            ></v-btn>
                             <div class="d-flex align-center flex-grow-1">
                                 <v-icon
                                     :icon="getFileTypeIcon(getFileTypeFromUrl(coursesStore.currentMaterial.file))"
@@ -260,6 +267,13 @@ const handleEditCourse = (data: { name: string; description: string }) => {
                 <div v-else-if="coursesStore.currentTheme" class="theme-container">
                     <v-card class="theme-card" rounded="xl">
                         <v-card-title class="theme-header">
+                            <v-btn
+                                icon="mdi-arrow-left"
+                                variant="text"
+                                size="small"
+                                class="mr-2"
+                                @click="coursesStore.selectTheme(null)"
+                            ></v-btn>
                             <div class="d-flex align-center flex-grow-1">
                                 <v-icon color="secondary" size="32" class="mr-4">mdi-folder</v-icon>
                                 <div>
@@ -354,6 +368,13 @@ const handleEditCourse = (data: { name: string; description: string }) => {
                 <div v-else-if="coursesStore.currentCourse" class="course-container">
                     <v-card class="course-card" rounded="xl">
                         <v-card-title class="course-header">
+                            <v-btn
+                                icon="mdi-arrow-left"
+                                variant="text"
+                                size="small"
+                                class="mr-2"
+                                @click="coursesStore.selectCourse(null)"
+                            ></v-btn>
                             <div class="d-flex align-center flex-grow-1">
                                 <v-icon color="primary" size="36" class="mr-4">mdi-book-open-variant</v-icon>
                                 <div>
