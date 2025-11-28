@@ -26,8 +26,7 @@ const fileType = computed(() => {
 const getFileUrl = (fileUrl: string): string => {
     // If URL is absolute, return as is
     if (fileUrl.startsWith('http://')) {
-        // return fileUrl.replace('http://', 'https://')
-        return fileUrl;
+        return fileUrl.replace('http://', 'https://')
     }
     if (fileUrl.startsWith('https://')) {
         return fileUrl
