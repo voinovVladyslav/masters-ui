@@ -36,7 +36,7 @@ const makeRequest = async ({
 const authenticateApi = (token: string) => {
     api.defaults.headers.common['Authorization'] = `Token ${token}`
 }
-const unauthenticateApi = (token: string) => {
+const unauthenticateApi = () => {
     delete api.defaults.headers.common['Authorization']
 }
 export { makeRequest, authenticateApi, unauthenticateApi }

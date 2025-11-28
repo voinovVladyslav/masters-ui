@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
 import { useAuthStore } from './stores/auth'
+import { removeToken } from './services/token'
+import { unauthenticateApi } from './services/api'
 
 const authStore = useAuthStore()
 const router = useRouter()
 
 const handleLogout = () => {
-    // TODO: Implement logout functionality
+    removeToken()
+    unauthenticateApi()
     router.push({ name: 'login' })
 }
 </script>
@@ -34,10 +37,14 @@ const handleLogout = () => {
                                 </v-avatar>
                                 <div class="d-flex flex-column">
                                     <span class="text-body-2 font-weight-medium">
-                                        {{ authStore.user.first_name }} {{ authStore.user.last_name }}
+                                        {{ authStore.user.first_name }}
+                                        {{ authStore.user.last_name }}
                                     </span>
                                     <span class="text-caption text-grey">
-                                        {{ authStore.user.role.charAt(0).toUpperCase() + authStore.user.role.slice(1) }}
+                                        {{
+                                            authStore.user.role.charAt(0).toUpperCase() +
+                                            authStore.user.role.slice(1)
+                                        }}
                                     </span>
                                 </div>
                                 <v-icon size="small" class="ml-2">mdi-chevron-down</v-icon>
