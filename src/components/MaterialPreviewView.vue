@@ -23,7 +23,10 @@ const fileType = computed(() => {
 
 const getFileUrl = (fileUrl: string): string => {
     // If URL is absolute, return as is
-    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+    if (fileUrl.startsWith('http://')) {
+        return fileUrl.replace('http://', 'https://')
+    }
+    if (fileUrl.startsWith('https://')) {
         return fileUrl
     }
     // If relative, prepend API base URL
@@ -48,15 +51,15 @@ const loadDocument = async () => {
     try {
         const fileUrl = getFileUrl(props.material.file)
         const type = fileType.value
-        
+
         if (!type || type === 'unknown') {
             error.value = `Unknown file type for: ${props.material.file}`
             previewContent.value = `<p>Unknown file type. <a href="${fileUrl}" target="_blank">Download file</a></p>`
             return
         }
-        
+
         console.log('Loading material:', props.material.name, 'Type:', type, 'URL:', fileUrl)
-        
+
         const token = getToken()
         const headers: Record<string, string> = {}
         if (token) {
@@ -85,7 +88,7 @@ const loadDocument = async () => {
                     URL.revokeObjectURL(pptxBlobUrl.value)
                     pptxBlobUrl.value = null
                 }
-                
+
                 const response = await axios.get(fileUrl, {
                     responseType: 'blob',
                     headers,
@@ -108,7 +111,9 @@ const loadDocument = async () => {
                     responseType: 'blob',
                     headers,
                 })
-                const blob = new Blob([response.data], { type: `image/${type === 'jpg' ? 'jpeg' : type}` })
+                const blob = new Blob([response.data], {
+                    type: `image/${type === 'jpg' ? 'jpeg' : type}`,
+                })
                 const blobUrl = URL.createObjectURL(blob)
                 previewContent.value = `<img src="${blobUrl}" alt="${props.material.name}" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;" />`
             } catch (imgErr) {
@@ -138,7 +143,7 @@ watch(
         }
         loadDocument()
     },
-    { immediate: true }
+    { immediate: true },
 )
 
 onBeforeUnmount(() => {
@@ -169,13 +174,23 @@ onBeforeUnmount(() => {
             <v-alert-title>Error loading document</v-alert-title>
             {{ error }}
         </v-alert>
-        <div v-if="!loading && !error && previewContent && fileType !== 'pptx'" class="preview-content">
+        <div
+            v-if="!loading && !error && previewContent && fileType !== 'pptx'"
+            class="preview-content"
+        >
             <div v-if="fileType === 'docx'" v-html="previewContent" class="docx-content"></div>
-            <div v-else-if="fileType === 'png' || fileType === 'jpg'" v-html="previewContent" class="image-content"></div>
+            <div
+                v-else-if="fileType === 'png' || fileType === 'jpg'"
+                v-html="previewContent"
+                class="image-content"
+            ></div>
             <div v-else v-html="previewContent" class="other-content"></div>
         </div>
-        <div v-if="!loading && !error && fileType === 'pptx' && pptxBlobUrl" class="preview-content pptx-content">
-            <VueOfficePptx :src="pptxBlobUrl" style="height: 600px;" />
+        <div
+            v-if="!loading && !error && fileType === 'pptx' && pptxBlobUrl"
+            class="preview-content pptx-content"
+        >
+            <VueOfficePptx :src="pptxBlobUrl" style="height: 600px" />
         </div>
         <v-card
             v-if="!loading && !error && !previewContent && !pptxBlobUrl && material"
@@ -254,8 +269,8 @@ onBeforeUnmount(() => {
 .other-content {
     line-height: 1.8;
     color: #333;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-        sans-serif;
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .docx-content :deep(h1),
@@ -396,4 +411,3 @@ onBeforeUnmount(() => {
     background: transparent;
 }
 </style>
-
