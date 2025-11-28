@@ -4,10 +4,12 @@ import { authService } from '@/services/auth'
 import { setToken } from '@/services/token'
 import { useAuthStore } from '@/stores/auth'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const email = ref<string>('')
 const password = ref<string>('')
+const router = useRouter()
 
 const onLogin = async () => {
     const response = await authService.login(email.value, password.value)
@@ -19,6 +21,7 @@ const onLogin = async () => {
     setToken(token)
     authenticateApi(token)
     await authStore.loadUser()
+    router.push({ name: 'home' })
 }
 </script>
 <template>
