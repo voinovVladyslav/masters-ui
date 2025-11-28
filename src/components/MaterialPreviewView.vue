@@ -6,6 +6,8 @@ import { getFileTypeFromUrl } from '@/utils/fileUtils'
 import { getToken } from '@/services/token'
 import axios from 'axios'
 import VueOfficePptx from '@vue-office/pptx'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/github-dark.css'
 
 const props = defineProps<{
     material: Material | null
@@ -24,7 +26,8 @@ const fileType = computed(() => {
 const getFileUrl = (fileUrl: string): string => {
     // If URL is absolute, return as is
     if (fileUrl.startsWith('http://')) {
-        return fileUrl.replace('http://', 'https://')
+        // return fileUrl.replace('http://', 'https://')
+        return fileUrl;
     }
     if (fileUrl.startsWith('https://')) {
         return fileUrl
@@ -121,6 +124,21 @@ const loadDocument = async () => {
                 console.error('Error loading image:', imgErr)
                 previewContent.value = `<img src="${fileUrl}" alt="${props.material.name}" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #e0e0e0;" onerror="this.onerror=null; this.parentElement.innerHTML='<p>Failed to load image. <a href=\\'${fileUrl}\\' target=\\'_blank\\'>Download file</a></p>'" />`
             }
+        } else if (type === 'py') {
+            // For Python files, fetch as text and apply syntax highlighting
+            try {
+                const response = await axios.get(fileUrl, {
+                    responseType: 'text',
+                    headers,
+                })
+                const code = response.data
+                const highlighted = hljs.highlight(code, { language: 'python' }).value
+                previewContent.value = `<pre><code class="hljs language-python">${highlighted}</code></pre>`
+            } catch (pyErr) {
+                console.error('Error loading Python file:', pyErr)
+                error.value = 'Failed to load Python file'
+                previewContent.value = `<p>Failed to load Python file. <a href="${fileUrl}" target="_blank" download>Download file</a></p>`
+            }
         } else {
             previewContent.value = `<p>Preview not available for this file type. <a href="${fileUrl}" target="_blank" download>Download file</a></p>`
         }
@@ -183,6 +201,11 @@ onBeforeUnmount(() => {
                 v-else-if="fileType === 'png' || fileType === 'jpg'"
                 v-html="previewContent"
                 class="image-content"
+            ></div>
+            <div
+                v-else-if="fileType === 'py'"
+                v-html="previewContent"
+                class="python-content"
             ></div>
             <div v-else v-html="previewContent" class="other-content"></div>
         </div>
@@ -263,6 +286,30 @@ onBeforeUnmount(() => {
     justify-content: center;
     align-items: flex-start;
     padding: 16px;
+}
+
+.python-content {
+    padding: 0;
+    overflow-x: auto;
+}
+
+.python-content :deep(pre) {
+    margin: 0;
+    padding: 24px;
+    
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.python-content :deep(code) {
+    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
 }
 
 .docx-content,
